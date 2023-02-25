@@ -6,22 +6,24 @@ ENV CASC_JENKINS_CONFIG /var/jenkins_home/casc.yaml
 USER root
 
 COPY plugins.txt plugins.txt
-RUN /usr/local/bin/install-plugins.sh < plugins.txt
+COPY --chown=jenkins:jenkins plugins.txt /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
+# RUN /usr/local/bin/install-plugins.sh < plugins.txt
 COPY casc.yaml /var/jenkins_home/casc.yaml
 
 RUN exit
 # Install base tools
 RUN apt-get update && apt-get install -y \
-    apt-utils \
-    wget \
-    xz-utils \
-    curl \
-    git \
-    openjdk-11-jdk \
-    ant \
-    nodejs \
-    npm 
-   
+  apt-utils \
+  wget \
+  xz-utils \
+  curl \
+  git \
+  openjdk-11-jdk \
+  ant \
+  nodejs \
+  npm
+
 	
 ENV ANT_HOME /usr/share/java/apache-ant
 ENV PATH $PATH:$ANT_HOME/bin
